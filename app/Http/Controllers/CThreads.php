@@ -96,12 +96,16 @@ class CThreads extends Controller
 
     public function showAll(){
         $threads = Thread::all();
+        $count = Thread::all()->count();
         if (!$threads)
             return [
                 'status_code' => 404,
                 'message' => 'Data Not Found'
             ];
-
+        for ($i=0; $i<$count; $i++){
+            $category = Category::where('id', $threads[$i]->category_id)->first();
+            $threads[$i]->category = $category;
+        }
         return [
             'status_code' => 200,
             'value' => $threads
@@ -133,7 +137,11 @@ class CThreads extends Controller
                 'status_code' => 404,
                 'message' => 'Threads not found'
             ];
-
+        $count = Thread::where('category_id', $cat)->count();
+        for ($i=0; $i<$count; $i++){
+            $category = Category::where('id', $threads[$i]->category_id)->first();
+            $threads[$i]->category = $category;
+        }
         return [
             'status_code' => 200,
             'value' => $threads
